@@ -180,7 +180,21 @@ module.exports = {
 #### 10. We have our configuration file created, but we haven’t install the libraries. What does it mean? It’s not going to work.
 
 ```sh
-$ npm i --save-dev html-webpack-plugin babel-core babel-loader webpack-dev-server@2
+$ npm i --save-dev html-webpack-plugin babel-core babel-preset-env babel-loader webpack-dev-server@2
+```
+
+#### 11. Create a `.babelrc` file to save babel configuration.
+
+```sh
+$ touch .babelrc
+```
+
+###### Paste the below configuration into `.babelrc`
+
+```json
+{
+  "presets": ["env"]
+}
 ```
 
 #### 10. Now, we can run in our terminal `npm run build`, and this time it will work.
@@ -207,3 +221,13 @@ $ npm run dev
 ## Notes
 
 + In development process, it’s normal to have two terminal tabs, one for running the server and the other one for building the new code.
++ Don’t forget to ignore `/dist` and `/node_modules` if you are going to push to GitHub.
+```sh
+$ touch .gitignore
+```
+
+###### Inside `.gitignore`
+```sh
+/dist
+/node_modules
+```
