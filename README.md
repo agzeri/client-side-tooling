@@ -231,3 +231,107 @@ $ touch .gitignore
 /dist
 /node_modules
 ```
+
+## Part II
+### Configuring Sass
+
+###### Webpack it’s a JavaScript tool, it only understands JavaScript. So, if we are planning to write Sass we’ll need to add more configuration.
+
+#### 1. Install a webpack plugin to extract CSS from Webpack.
+
+```sh
+$ npm install --save-dev extract-text-webpack-plugin
+```
+
+#### 2. Call that library inside `webpack.config.js`.
+
+```diff
+const generateFile = require('html-webpack-plugin') // [1]
++ const extractCss = require('extract-text-webpack-plugin');
+```
+
+#### 3. Configure the `extract-text-webpack-plugin` in `plugins` property.
+
+```diff
+// [9]
+plugins: [
+  // [10]
+  new generateFile({
+    title: 'GitHub',
+    filename: 'index.html'
++ }),
++ new extractCss({
++   filename: 'main.css'
++ })
+],
+```
+
+#### 4. Install CSS and Sass dependencies using your terminal
+
+```sh
+$ npm install --save-dev node-sass css-loader sass-loader
+```
+
+#### 5. Now, we have a property called `rules`, inside `module` property. Add another object in `rules` array.
+
+```diff
+module: {
+  rules: [
+    {
+      test: /\.js$/, // [6]
+      exclude: /node_modules/, // [7]
+      use: {
+        loader: 'babel-loader' // [8]
+      }
++   },
++   {
++     test: /\.scss$/,
++     use: extractCss.extract({
++       use: ['css-loader', 'sass-loader']
++     })
++   }
+  ]
+},
+```
+
+#### 6. Finally, inside `src` folder create your Sass file from the terminal.
+
+```sh
+$ touch src/main.scss
+```
+
+#### 7. Add the below code to your `.scss` file.
+
+```scss
+$red: red;
+
+body {
+  background-color: $red;
+}
+```
+
+#### 8. And the most important line, you need to import those styles so webpack can understand the configuration. Go to your `main.js` —inside `src` folder— and add the next line:
+
+```diff
+import addTwo from './addTwo'
++ import './main.scss'
+
+console.log(addTwo(8))
+```
+
+## Notes
++ Don’t forget to run your server with `npm run dev` to see the changes.
++ If you inspect the `/dist` folder, now you’ll see a structure like this:
+```
++ /dist
+   |
+   +-- index.html
+   |
+   +-- main.css
+   |
+   +-- main.css.map
+   |  
+   +-- main.min.js
+   |
+   +-- main.min.js.map
+  ```
